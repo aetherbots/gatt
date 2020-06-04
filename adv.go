@@ -2,7 +2,6 @@ package gatt
 
 import (
 	"errors"
-	"log"
 )
 
 // MaxEIRPacketLength is the maximum allowed AdvertisingPacket
@@ -74,6 +73,8 @@ type Advertisement struct {
 	TxPowerLevel     int
 	Connectable      bool
 	SolicitedService []UUID
+
+	Type byte
 }
 
 // This is only used in Linux port.
@@ -93,6 +94,7 @@ func (a *Advertisement) unmarshall(b []byte) error {
 			return errors.New("invalid advertise data")
 		}
 		l, t := b[0], b[1]
+		a.Type = t
 		if len(b) < int(1+l) {
 			return errors.New("invalid advertise data")
 		}
@@ -131,7 +133,7 @@ func (a *Advertisement) unmarshall(b []byte) error {
 		// case typeServiceData32,
 		// case typeServiceData128:
 		default:
-			log.Printf("DATA: [ % X ]", d)
+			//log.Printf("DATA: [ % X ]", d)
 		}
 		b = b[1+l:]
 	}
